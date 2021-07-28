@@ -1,0 +1,62 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: jupyter-notebook-builder
+objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: "${IMAGE_NAME}"
+      labels:
+        app: "${IMAGE_NAME}"
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: "${IMAGE_NAME}"
+      labels:
+        app: "${IMAGE_NAME}"
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: "${IMAGE_NAME}:${VERSION}"
+      resources:
+        limits:
+          memory: 1Gi
+      source:
+        type: Git
+        git:
+          uri: "${GIT_REPOSITORY_URL}"
+          ref: "${GIT_REFERENCE}"
+        contextDir: "${CONTEXT_DIR}"
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: DockerImage
+            name: "${BUILDER_IMAGE}"
+          scripts: "${BUILDER_SCRIPTS}"
+      triggers:
+      - type: ConfigChange
+parameters:
+  - name: IMAGE_NAME
+    value: notebook
+    required: true
+  - name: BUILDER_IMAGE
+    value: jupyter/minimal-notebook:latest
+    required: true
+  - name: BUILDER_SCRIPTS
+    value: https://raw.githubusercontent.com/jupyter/docker-stacks/master/examples/source-to-image
+    required: true
+  - name: GIT_REPOSITORY_URL
+    value: 'https://github.com/BCDevOps/openshift-quota-rec.git'
+    required: true
+  - name: GIT_REFERENCE
+    value: master
+    required: true
+  - name: CONTEXT_DIR
+    value: 'openshift'
+    required: false
+  - name: VERSION
+    value: '1.0'
