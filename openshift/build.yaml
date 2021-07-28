@@ -50,7 +50,7 @@ parameters:
     value: https://raw.githubusercontent.com/jupyter/docker-stacks/master/examples/source-to-image
     required: true
   - name: GIT_REPOSITORY_URL
-    value: 'https://github.com/BCDevOps/openshift-quota-rec.git'
+    value: 'https://github.com/poornima-sivanand/Jupyter-On-OpenShift.git'
     required: true
   - name: GIT_REFERENCE
     value: master
